@@ -2,12 +2,14 @@ import { Searcher } from './modules/searcher.js';
 
 const searcher = new Searcher('languagelearning');
 
-let question = 'how to -good learn chinese -happy -expensive';
+let question = 'how to --good learn chinese !-happy --expensive';
 
 let sq = searcher.toSearchQuery(question);
 console.log(sq);
 
-let articles = await searcher.searchStackExchange('languagelearning', sq);
+//let articles = await searcher.searchStackExchange('languagelearning', sq);
+let articles = await searcher.searchGoogle(sq);
+
 console.log(articles);
 
 const listArticles = document.getElementById('articles');

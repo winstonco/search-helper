@@ -1,11 +1,5 @@
 /**
  * @instance A SearchQuery with key terms, ignored words, required words, and tags.
- * @example
- * Given: 'how to play piano --practice !-easy t-fast'
- * -> terms = ['how', 'to', 'play', 'piano']
- * -> ignore = ['practice']
- * -> require = ['easy']
- * -> tags = ['fast']
  */
 class SearchQuery {
   terms = [''];
@@ -14,7 +8,8 @@ class SearchQuery {
   tags = [''];
 }
 
-const SEAPI = 'https://api.stackexchange.com/2.3/';
+const SEAPI = 'https://api.stackexchange.com/2.3/search/advanced';
+const GoogleAPI = 'https://customsearch.googleapis.com/customsearch/v1';
 
 /**
  * A class containing methods to search a source.
@@ -25,14 +20,22 @@ export class Searcher {
    * returns a SearchQuery object.
    * @param {string} search The search query as a string.
    * @returns {SearchQuery} The query as a SearchQuery object.
+   * @operators '--', '!-', 't-'
+   * @example
+   * Given: 'how to play piano --practice !-easy t-fast'
+   * -> terms = ['how', 'to', 'play', 'piano']
+   * -> ignore = ['practice']
+   * -> require = ['easy']
+   * -> tags = ['fast']
    */
   toSearchQuery(search) {
     if (typeof search != 'string') {
       throw new Error('Search is not a string.');
     }
     const sq = new SearchQuery();
-    sq.ignore = findOperands(search, '-'); // Find ignores
-    sq.require = findOperands(search, '!'); // Find requires
+    sq.ignore = findOperands(search, '--'); // Find ignores
+    sq.require = findOperands(search, '!-'); // Find requires
+    sq.tags = findOperands(search, 't-'); // Find requires
     // Find the rest
     let terms = search;
     sq.ignore.concat(sq.require).forEach((word) => {
@@ -40,13 +43,18 @@ export class Searcher {
     });
     terms =
       ' ' +
-      terms.replaceAll('-', '').replaceAll('!', '').replace(/\s+/g, ' ').trim();
+      terms
+        .replaceAll('--', '')
+        .replaceAll('!-', '')
+        .replaceAll('t-', '')
+        .replace(/\s+/g, ' ')
+        .trim();
     sq.terms = findOperands(terms, ' ');
     return sq;
   }
 
   /**
-   * Takes a SearchQuery instance and returns a list of relevant articles.
+   * Takes a SearchQuery instance and returns a list of relevant articles from Stack Exchange.
    * @async
    * @param {string} site The site property in the SE API call.
    * @param {SearchQuery} query The SearchQuery.
@@ -57,15 +65,49 @@ export class Searcher {
       throw new Error('Query is not a SearchQuery.');
     }
     let reqURL = SEAPI;
-    reqURL += 'search/advanced?pagesize=30&order=desc&sort=relevance&';
-    if (query.terms) {
-      reqURL += `q=${query.terms.join(' ')}&`;
+    reqURL += '?pagesize=30&order=desc&sort=relevance';
+    if (query.terms.length > 0) {
+      reqURL += `&q=${query.terms.join(' ')}`;
     }
-    if (query.require) {
-      reqURL += `body=${query.require.join(' ')}&`;
+    if (query.require.length > 0) {
+      reqURL += `&body=${query.require.join(' ')}`;
     }
     if (site) {
-      reqURL += `site=${site}`;
+      reqURL += `&site=${site}`;
+    }
+
+    console.log('Request: ' + reqURL);
+    const response = await fetch(reqURL);
+    const body = await response.json();
+    let items = body.items;
+    let articles = [];
+    items.forEach((item) => {
+      articles.push({ title: item.title, link: item.link });
+    });
+    return articles;
+  }
+
+  /**
+   * Takes a SearchQuery instance and returns a list of relevant search results from Google.
+   * @async
+   * @param {SearchQuery} query The SearchQuery.
+   * @returns {Promise<{title, link}[]>} An array of {title, link} objects.
+   */
+  async searchGoogle(query) {
+    if (!(query instanceof SearchQuery)) {
+      throw new Error('Query is not a SearchQuery.');
+    }
+    let reqURL = GoogleAPI;
+    reqURL +=
+      '?key=AIzaSyCMCksg_d6ca9srsVFNrBUzA1wbkLsfyRs&cx=33f51b3ea70b34663';
+    if (query.terms.length > 0) {
+      reqURL += `&q=${query.terms.join(' ')}`;
+    }
+    if (query.require.length > 0) {
+      reqURL += `&exactTerms=${query.require.join(' ')}`;
+    }
+    if (query.ignore.length > 0) {
+      reqURL += `&excludeTerms=${query.ignore.join(' ')}`;
     }
 
     console.log('Request: ' + reqURL);
@@ -83,11 +125,11 @@ export class Searcher {
 /**
  * Finds operands in a string denoted by (operator)(operand).
  * @param {string} string The full string to search.
- * @param {string} operator The operator to check for (e.g. -, !, t-).
+ * @param {string} operator The operator to check for (e.g. --, !-, t-).
  * @returns {string[]} An array of found operands.
  *
  * @example
- * var prompt = 'how to -good learn chinese -happy -expensive';
+ * var prompt = 'how to --good learn chinese --happy --expensive';
  * findOperands(prompt, '-');
  * -> ['good', 'happy', 'expensive']
  */
