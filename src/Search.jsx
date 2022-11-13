@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Searcher } from './modules/searcher.js';
+import { Settings } from './Settings.jsx';
 
 const searcher = new Searcher('languagelearning');
 
 export function Search(props) {
-  const [question, setQuestion] = useState(
-    'Enter a question or search terms...'
-  );
+  const [question, setQuestion] = useState('');
   const [results, setResults] = useState([{ title: '', link: '', id: '' }]);
 
   const updateResults = async () => {
@@ -36,26 +35,28 @@ export function Search(props) {
 
   return (
     <div className="search">
-      <div className="search-bar">
-        <form
-          onSubmit={(event) => {
-            updateResults();
-            event.preventDefault();
-          }}
-        >
-          <label>
-            <input
-              type="text"
-              value={question}
-              onChange={(event) => {
-                setQuestion(event.target.value);
-              }}
-            />
-          </label>
-          <input type="submit" value="Search" />
-        </form>
-      </div>
-      <ul id="articles">{resultsList}</ul>
+      <form
+        className="search-bar"
+        onSubmit={(event) => {
+          updateResults();
+          event.preventDefault();
+        }}
+      >
+        <label>
+          <input
+            className="search-bar-input"
+            type="text"
+            value={question}
+            placeholder="Enter a question or search terms..."
+            onChange={(event) => {
+              setQuestion(event.target.value);
+            }}
+          />
+        </label>
+        <input className="search-bar-submit" type="submit" value="Search" />
+      </form>
+      <Settings />
+      <ul className="articles">{resultsList}</ul>
     </div>
   );
 }
