@@ -58,7 +58,7 @@ export class Searcher {
    * @async
    * @param {string} site The site property in the SE API call.
    * @param {SearchQuery} query The SearchQuery.
-   * @returns {Promise<{title, link}[]>} An array of {title, link} objects.
+   * @returns {Promise<{title, link, id}[]>} An array of {title, link, id} objects.
    */
   async searchStackExchange(site, query) {
     if (!(query instanceof SearchQuery)) {
@@ -67,31 +67,44 @@ export class Searcher {
     let reqURL = SEAPI;
     reqURL += '?pagesize=30&order=desc&sort=relevance';
     if (query.terms.length > 0) {
-      reqURL += `&q=${query.terms.join(' ')}`;
+      reqURL += `&q=${query.terms.join('%20')}`;
     }
     if (query.require.length > 0) {
-      reqURL += `&body=${query.require.join(' ')}`;
+      reqURL += `&body=${query.require.join('%20')}`;
     }
     if (site) {
       reqURL += `&site=${site}`;
     }
 
     console.log('Request: ' + reqURL);
-    const response = await fetch(reqURL);
-    const body = await response.json();
-    let items = body.items;
-    let articles = [];
-    items.forEach((item) => {
-      articles.push({ title: item.title, link: item.link });
-    });
-    return articles;
+    let articles;
+    try {
+      const response = await fetch(reqURL);
+      const body = await response.json();
+      let items = body.items;
+      console.log();
+      articles = [];
+      items.forEach((item) => {
+        articles.push({ title: item.title, link: item.link, id: item.cacheId });
+      });
+    } catch (Error) {
+      articles = [
+        {
+          title: 'StackExchange search count limit reached',
+          link: '',
+          id: '-1',
+        },
+      ];
+    } finally {
+      return articles;
+    }
   }
 
   /**
    * Takes a SearchQuery instance and returns a list of relevant search results from Google.
    * @async
    * @param {SearchQuery} query The SearchQuery.
-   * @returns {Promise<{title, link}[]>} An array of {title, link} objects.
+   * @returns {Promise<{title, link, id}[]>} An array of {title, link, id} objects.
    */
   async searchGoogle(query) {
     if (!(query instanceof SearchQuery)) {
@@ -101,24 +114,33 @@ export class Searcher {
     reqURL +=
       '?key=AIzaSyCMCksg_d6ca9srsVFNrBUzA1wbkLsfyRs&cx=33f51b3ea70b34663';
     if (query.terms.length > 0) {
-      reqURL += `&q=${query.terms.join(' ')}`;
+      reqURL += `&q=${query.terms.join('%20')}`;
     }
     if (query.require.length > 0) {
-      reqURL += `&exactTerms=${query.require.join(' ')}`;
+      reqURL += `&exactTerms=${query.require.join('%20')}`;
     }
     if (query.ignore.length > 0) {
-      reqURL += `&excludeTerms=${query.ignore.join(' ')}`;
+      reqURL += `&excludeTerms=${query.ignore.join('%20')}`;
     }
 
     console.log('Request: ' + reqURL);
-    const response = await fetch(reqURL);
-    const body = await response.json();
-    let items = body.items;
-    let articles = [];
-    items.forEach((item) => {
-      articles.push({ title: item.title, link: item.link });
-    });
-    return articles;
+    let articles;
+    try {
+      const response = await fetch(reqURL);
+      const body = await response.json();
+      let items = body.items;
+      console.log();
+      articles = [];
+      items.forEach((item) => {
+        articles.push({ title: item.title, link: item.link, id: item.cacheId });
+      });
+    } catch (Error) {
+      articles = [
+        { title: 'Google search count limit reached', link: '', id: '-1' },
+      ];
+    } finally {
+      return articles;
+    }
   }
 }
 
@@ -136,7 +158,7 @@ export class Searcher {
 function findOperands(string, operator) {
   const operands = [];
   let index = string.indexOf(operator, 0);
-  while (index != -1) {
+  while (index !== -1) {
     let spaceIndex = string.indexOf(' ', index + 1);
     if (spaceIndex === -1) {
       spaceIndex = string.length;
