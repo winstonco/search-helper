@@ -85,7 +85,11 @@ export class Searcher {
       console.log();
       articles = [];
       items.forEach((item) => {
-        articles.push({ title: item.title, link: item.link, id: item.cacheId });
+        articles.push({
+          title: item.title,
+          link: item.link,
+          id: item.question_id,
+        });
       });
     } catch (Error) {
       articles = [
