@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
 import parse from 'html-react-parser';
 
 export function SortedResults(props) {
-  const [results, setResults] = useState([{ title: '', link: '', id: '' }]);
-
   // Sort
-  console.log(props);
+  let results = [];
   const raw = props.rawArticles;
-  console.log('raw: ' + raw);
-  if (raw) {
+  if (raw && raw.length > 0) {
+    //debugger;
     switch (props.sort) {
       case 'date':
         // sort raw by date, mutating raw
@@ -19,12 +16,14 @@ export function SortedResults(props) {
       default:
         console.log('default sort');
     }
-    setResults(raw);
+    results = raw;
+    console.table(results);
   }
 
   const resultsList = results.map((item) => {
     // using props.sort -- default
     // sort articles and set resultsList
+    console.log(item);
     return (
       <li key={item.id}>
         <a href={item.link} target="_blank" rel="nooperner noreferrer">

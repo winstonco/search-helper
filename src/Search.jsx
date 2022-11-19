@@ -9,14 +9,14 @@ export function Search(props) {
   const [question, setQuestion] = useState('');
   const [site, setSite] = useState('google');
   const [sort, setSort] = useState('default');
-  //const [rawArticles, setRawArticles] = useState();
+  const [rawArticles, setRawArticles] = useState();
 
-  let rawArticles = [];
+  //let rawArticles = [];
   const updateResults = async () => {
     if (!question) {
       return <div>No question given.</div>;
     } //'how to --good learn chinese !-happy --expensive';
-
+    //debugger;
     let sq = searcher.toSearchQuery(question);
     console.log(sq);
     switch (site) {
@@ -26,15 +26,15 @@ export function Search(props) {
       //   );
       //   break;
       case 'google':
-        // setRawArticles(await searcher.searchGoogle(sq));
-        rawArticles = await searcher.searchGoogle(sq);
+        setRawArticles(await searcher.searchGoogle(sq));
+        //rawArticles = await searcher.searchGoogle(sq);
         break;
       default:
       // setRawArticles([
       //   { title: 'dummytitle', link: 'dummylink', id: 'dummyid' },
       // ]);
     }
-    console.log(rawArticles);
+    console.table(rawArticles);
   };
 
   return (
