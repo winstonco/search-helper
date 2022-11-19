@@ -5,18 +5,22 @@ export function SortedResults(props) {
   const [results, setResults] = useState([{ title: '', link: '', id: '' }]);
 
   // Sort
+  console.log(props);
   const raw = props.rawArticles;
-  switch (props.sort) {
-    case 'date':
-      // sort raw by date, mutating raw
-      raw.forEach();
-      break;
-    case 'relevant':
-      break;
-    default:
-      console.log('default sort');
+  console.log('raw: ' + raw);
+  if (raw) {
+    switch (props.sort) {
+      case 'date':
+        // sort raw by date, mutating raw
+        //raw.forEach();
+        break;
+      case 'relevant':
+        break;
+      default:
+        console.log('default sort');
+    }
+    setResults(raw);
   }
-  setResults(raw);
 
   const resultsList = results.map((item) => {
     // using props.sort -- default
