@@ -40,8 +40,9 @@ export function Settings(props) {
         <div className="pick-sort">
           <p>Sort By</p>
           <select onChange={changeSort}>
-            <option value="Date">Date</option>
-            <option value="Relevancy">Relevancy</option>
+            <option value="relevancy">Relevancy</option>
+            <option value="date">Date</option>
+            <option value="starred">Starred</option>
           </select>
         </div>
       </div>

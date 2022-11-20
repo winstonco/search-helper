@@ -3,10 +3,22 @@
   border: 1px solid black;
   border-radius: 30px;
   padding: 20px;
-  h3 {
-    @include font-subtitle;
-    padding-bottom: 1rem;
-    position: relative;
+  .options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    button {
+      border: none;
+      background-color: white;
+      width: auto;
+      height: auto;
+      cursor: pointer;
+    }
+    h3 {
+      @include font-subtitle;
+      padding-bottom: 1rem;
+      position: relative;
+    }
   }
   ul {
     height: 40vh;
@@ -16,6 +28,11 @@
       //background-color: darken(white, 10%);
       margin-bottom: 1rem;
       //border-bottom: 1px solid rgb(151, 151, 151);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+
       a {
         @include font-normal;
         text-decoration: underline;
@@ -26,8 +43,8 @@
       }
 
       button {
-        float: right;
         margin-right: 10px;
+        margin-left: auto;
       }
     }
   }

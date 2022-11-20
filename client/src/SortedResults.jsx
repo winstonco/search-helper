@@ -1,9 +1,12 @@
+import React, { useState } from 'react';
 import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 export function SortedResults(props) {
+  const navigate = useNavigate();
   // TEMP DATABASE
   /*
   users.john.saved {
@@ -15,12 +18,10 @@ export function SortedResults(props) {
     }
   }
   */
-  const data = {
-    googleLinks: [
-      'https://en.wikipedia.org/wiki/A',
-      'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a',
-    ],
-  };
+  const [googleLinks, setGoogleLinks] = useState([
+    'https://en.wikipedia.org/wiki/A',
+    'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a',
+  ]);
 
   // Sort
   const results = props.rawArticles || [];
@@ -36,7 +37,7 @@ export function SortedResults(props) {
       default:
         console.log('default sort');
     }
-    console.table(results);
+    // console.table(results);
   }
 
   /**
@@ -46,7 +47,7 @@ export function SortedResults(props) {
    * @returns A FontAwesome star icon, either a filled in or regular star if starred or not.
    */
   const checkStarred = (link, site) => {
-    if (data.googleLinks.includes(link)) {
+    if (googleLinks.includes(link)) {
       return (
         <button onClick={() => remFav(link)}>
           <FontAwesomeIcon icon={faStarSolid} />
@@ -64,23 +65,25 @@ export function SortedResults(props) {
   Add and remove favorites from the temp data list
   */
   const addFav = (link) => {
+    // debugger;
     // Add link to data
-    data.googleLinks.push(link);
+    // data.googleLinks.push(link);
+    setGoogleLinks(googleLinks.splice(0, 0, link));
     // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-    console.table(data.googleLinks);
+    console.table(googleLinks);
   };
   const remFav = (link) => {
     // Add link to data
-    let i = data.googleLinks.find(link);
-    data.googleLinks.splice(i, i + 1);
+    let i = googleLinks.indexOf(link);
+    setGoogleLinks(googleLinks.splice(i, 1));
     // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-    console.table(data.googleLinks);
+    console.table(googleLinks);
   };
 
   const resultsList = results.map((item) => {
     // using default props.sort
     // sort articles and set resultsList
-    console.log(item);
+    // console.log(item);
     return (
       <li key={item.id}>
         <a href={item.link} target="_blank" rel="nooperner noreferrer">
@@ -93,7 +96,22 @@ export function SortedResults(props) {
 
   return (
     <div className="articles">
-      <h3>Results</h3>
+      <div className="options">
+        <button
+          onClick={() => {
+            navigate('/results');
+          }}
+        >
+          <h3>Results</h3>
+        </button>
+        <button
+          onClick={() => {
+            navigate('/saved');
+          }}
+        >
+          <h3>Saved</h3>
+        </button>
+      </div>
       <ul>{resultsList}</ul>
     </div>
   );

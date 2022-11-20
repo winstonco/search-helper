@@ -17,8 +17,9 @@ function App() {
       </a>
       <div className="search">
         <Search
-          setSort={setSort}
           setRawArticles={setRawArticles}
+          setSort={setSort}
+          sort={sort}
           setSite={setSite}
           site={site}
         />

@@ -9,6 +9,8 @@ export function Search(props) {
   const navigate = useNavigate();
 
   const [question, setQuestion] = useState('');
+  let site = props.site;
+  let sort = props.sort;
 
   const updateResults = async () => {
     if (!question) {
@@ -17,14 +19,15 @@ export function Search(props) {
     //debugger;
     let sq = searcher.toSearchQuery(question);
     console.log(sq);
-    switch (props.site) {
+    console.log(site);
+    switch (site) {
       case 'stackexchange':
         props.setRawArticles(
-          await searcher.searchStackExchange('languagelearning', sq)
+          await searcher.searchStackExchange('languagelearning', sq, sort)
         );
         break;
       case 'google':
-        props.setRawArticles(await searcher.searchGoogle(sq));
+        props.setRawArticles(await searcher.searchGoogle(sq, sort));
         break;
       default:
         props.setRawArticles([
@@ -34,12 +37,26 @@ export function Search(props) {
     // console.table(rawArticles);
   };
 
+  const handleSiteChange = (newSite) => {
+    props.setSite(newSite);
+    site = newSite;
+    console.log(newSite);
+    updateResults();
+  };
+
+  const handleSortChange = (newSort) => {
+    props.setSort(newSort);
+    sort = newSort;
+    console.log(newSort);
+    updateResults();
+  };
+
   return (
     <>
       <Settings
-        site={props.site}
-        setSite={props.setSite}
-        setSort={props.setSort}
+        site={site}
+        setSite={handleSiteChange}
+        setSort={handleSortChange}
       />
       <form
         className="search-bar"
