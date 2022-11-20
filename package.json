@@ -1,0 +1,20 @@
+{
+  "name": "search-helper",
+  "version": "1.0.0",
+  "description": "A tool to search things.\r Input a query with optional operators/operands",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winstonco/search-helper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/winstonco/search-helper/issues"
+  },
+  "homepage": "https://github.com/winstonco/search-helper#readme",
+  "dependencies": {
+    "@fortawesome/free-regular-svg-icons": "^6.2.1"
+  }
+}
