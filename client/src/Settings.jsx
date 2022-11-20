@@ -20,11 +20,11 @@ export function Settings(props) {
   };
 
   const handleClick = () => {
-    setIsOpen(!isOpen);
     isOpen
-      ? setIconClass('settings-icon rotate120')
-      : setIconClass('settings-icon');
-    isOpen ? setOptionsClass('options slide-in') : setOptionsClass('options');
+      ? setIconClass('settings-icon')
+      : setIconClass('settings-icon rotate120');
+    isOpen ? setOptionsClass('options') : setOptionsClass('options slide-in');
+    setIsOpen(!isOpen);
   };
 
   return (

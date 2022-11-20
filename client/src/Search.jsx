@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { Searcher } from './modules/searcher.js';
 import { Settings } from './Settings.jsx';
-import { SortedResults } from './SortedResults.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const searcher = new Searcher('languagelearning');
 
 export function Search(props) {
-  const [question, setQuestion] = useState('');
-  const [site, setSite] = useState('google');
-  const [sort, setSort] = useState('default');
-  const [rawArticles, setRawArticles] = useState();
+  const navigate = useNavigate();
 
-  //let rawArticles = [];
+  const [question, setQuestion] = useState('');
+
   const updateResults = async () => {
     if (!question) {
       return <div>No question given.</div>;
@@ -19,32 +17,36 @@ export function Search(props) {
     //debugger;
     let sq = searcher.toSearchQuery(question);
     console.log(sq);
-    switch (site) {
-      // case 'stackexchange':
-      //   setRawArticles(
-      //     await searcher.searchStackExchange('languagelearning', sq)
-      //   );
-      //   break;
+    switch (props.site) {
+      case 'stackexchange':
+        props.setRawArticles(
+          await searcher.searchStackExchange('languagelearning', sq)
+        );
+        break;
       case 'google':
-        setRawArticles(await searcher.searchGoogle(sq));
-        //rawArticles = await searcher.searchGoogle(sq);
+        props.setRawArticles(await searcher.searchGoogle(sq));
         break;
       default:
-      // setRawArticles([
-      //   { title: 'dummytitle', link: 'dummylink', id: 'dummyid' },
-      // ]);
+        props.setRawArticles([
+          { title: 'dummytitle', link: 'dummylink', id: 'dummyid' },
+        ]);
     }
-    console.table(rawArticles);
+    // console.table(rawArticles);
   };
 
   return (
-    <div className="search">
-      <Settings site={site} setSite={setSite} setSort={setSort} />
+    <>
+      <Settings
+        site={props.site}
+        setSite={props.setSite}
+        setSort={props.setSort}
+      />
       <form
         className="search-bar"
         onSubmit={(event) => {
           updateResults();
           event.preventDefault();
+          navigate('/results');
         }}
       >
         <label>
@@ -60,8 +62,6 @@ export function Search(props) {
         </label>
         <input className="search-bar-submit" type="submit" value="Search" />
       </form>
-
-      <SortedResults rawArticles={rawArticles} sort={sort} />
-    </div>
+    </>
   );
 }
