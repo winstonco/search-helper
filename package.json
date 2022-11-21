@@ -1,20 +1,18 @@
 {
   "name": "search-helper",
   "version": "1.0.0",
-  "description": "A tool to search things.\r Input a query with optional operators/operands",
+  "description": "",
   "main": "app.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/winstonco/search-helper.git"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/winstonco/search-helper/issues"
-  },
-  "homepage": "https://github.com/winstonco/search-helper#readme",
   "dependencies": {
-    "@fortawesome/free-regular-svg-icons": "^6.2.1"
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^4.12.0"
   }
 }

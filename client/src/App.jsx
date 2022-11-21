@@ -3,7 +3,7 @@ import { Search } from './Search';
 import React, { useState } from 'react';
 import { SortedResults } from './SortedResults';
 import { SavedResults } from './SavedResults';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, json } from 'react-router-dom';
 
 function App() {
   const [sort, setSort] = useState('default');
@@ -37,6 +37,25 @@ function App() {
           <Route path="/saved" element={<SavedResults />} />
         </Routes>
       </div>
+      <button
+        onClick={async () => {
+          await fetch('http://localhost:3001/api/createUser', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: 'Winston',
+            }),
+          })
+            .then((res) => res.json())
+            .then((response) => console.log(response));
+          // console.log(res);
+        }}
+      >
+        CLICK ME
+      </button>
     </div>
   );
 }
