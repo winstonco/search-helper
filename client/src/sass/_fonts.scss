@@ -41,3 +41,7 @@
   font-style: italic;
   color: red;
 }
+
+.font-warning {
+  @include font-warning;
+}

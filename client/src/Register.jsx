@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faX } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setIdCookie } from './modules/cookieHandler';
@@ -9,34 +9,34 @@ export function Register() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+  const [warning, setWarning] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     //debugger;
-    try {
-      createUser(username, password)
-        .then((res) => res.json())
-        .then((res) => {
-          setIdCookie(res.insertedId);
-        });
-    } catch (err) {
-      console.error(err);
-      console.log('Error: Username and password already exists!');
-      setDialogIsOpen(true);
-    }
-
-    navigate('/results');
+    createUser(username, password)
+      .then((res) => res.json())
+      .then((res) => {
+        setIdCookie(res.insertedId);
+        navigate('/results');
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log('Error: Username and password already exists!');
+        setPassword('');
+        setWarning('Error: Username and password already exists!');
+      });
   };
 
   return (
-    <>
+    <div className="register">
       <h1>Register:</h1>
       <form onSubmit={handleSubmit}>
         <label>
-          Username:
+          <FontAwesomeIcon icon={faUser} size="xl" />
           <input
             type="text"
+            placeholder="Username:"
             value={username}
             onChange={(event) => {
               setUsername(event.target.value);
@@ -45,9 +45,10 @@ export function Register() {
           />
         </label>
         <label>
-          Password:
+          <FontAwesomeIcon icon={faKey} size="xl" />
           <input
             type="password"
+            placeholder="Password:"
             value={password}
             onChange={(event) => {
               setPassword(event.target.value);
@@ -57,16 +58,7 @@ export function Register() {
         </label>
         <input type="submit" value="Register" />
       </form>
-      <dialog id="warning" open={dialogIsOpen}>
-        Error: Username and password already exists
-        <button
-          onClick={() => {
-            setDialogIsOpen(false);
-          }}
-        >
-          <FontAwesomeIcon icon={faX} />
-        </button>
-      </dialog>
-    </>
+      <p class="font-warning">{warning}</p>
+    </div>
   );
 }

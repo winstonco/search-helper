@@ -11,7 +11,6 @@ import { getUser, readUser } from './modules/useEndpoints';
 export function Login(props) {
   const [username, setUsername] = useState('');
   const [currentUser, setCurrentUser] = useState('');
-  const [currentPass, setCurrentPass] = useState('');
   const [password, setPassword] = useState('');
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [warning, setWarning] = useState('');
@@ -63,12 +62,13 @@ export function Login(props) {
       .then((res) => res.json())
       .then((res) => {
         setCurrentUser(res.username);
-        setCurrentPass(res.password);
       })
       .catch((err) => {
+        setCurrentUser();
         console.log('No userIdCookie info stored.');
       });
   };
+  setUserData();
 
   let signIn;
   // Sign in form not open
@@ -85,7 +85,7 @@ export function Login(props) {
     );
   } else {
     // Sign in form open, if logged in show user and log out
-    if (currentUser && currentPass) {
+    if (currentUser) {
       signIn = (
         <div id="signin" role="dialog" ref={ref}>
           <button id="close-signin" onClick={handleClose}>
@@ -98,20 +98,15 @@ export function Login(props) {
               <FontAwesomeIcon icon={faUser} />
               <p>{currentUser}</p>
             </div>
-            <div className="user-info-item">
-              <FontAwesomeIcon icon={faKey} />
-              <p>{currentPass}</p>
-            </div>
           </div>
-          <a
-            href="/"
+          <button
             onClick={() => {
               removeIdCookie();
               setUserData();
             }}
           >
             Sign Out?
-          </a>
+          </button>
         </div>
       );
     } else {
@@ -147,7 +142,7 @@ export function Login(props) {
               />
             </label>
             <input type="submit" value="Sign In" />
-            <p id="signin-warning">{warning}</p>
+            <p className="font-warning">{warning}</p>
           </form>
           <a href="/register">Don't have a login? Register here</a>
         </div>

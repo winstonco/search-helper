@@ -1,3 +1,9 @@
+.font-warning {
+  font-size: 16px;
+  font-style: italic;
+  color: red;
+}
+
 .articles {
   background-color: white;
   border: 1px solid black;
@@ -186,11 +192,11 @@ h2 {
 #signin .user-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 5px;
 }
 #signin .user-info svg {
-  width: 16px;
+  min-width: 16px;
 }
 #signin .user-info .user-info-item {
   display: flex;
@@ -221,13 +227,8 @@ h2 {
   width: 100%;
   cursor: pointer;
 }
-#signin .user-info #signin-warning {
-  font-size: 16px;
-  font-style: italic;
-  color: red;
-  align-self: center;
-}
-#signin a {
+#signin a,
+#signin button {
   font-size: 12px;
   text-decoration: none;
   font-weight: normal;
@@ -235,6 +236,53 @@ h2 {
   width: fit-content;
   border: none;
   background-color: #f5e5bf;
+  cursor: pointer;
+}
+
+.register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+.register h1 {
+  font-size: 30px;
+  font-weight: normal;
+  color: black;
+}
+.register form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 50%;
+}
+.register form label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+}
+.register form label svg {
+  min-width: 24px;
+}
+.register form label input {
+  padding: 6px;
+  width: 100%;
+}
+.register form input[type=submit] {
+  font-size: 22px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  font-size: 18px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #efd492;
+  width: 100%;
   cursor: pointer;
 }
 
