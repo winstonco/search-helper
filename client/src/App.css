@@ -112,7 +112,7 @@
   align-items: center;
   position: relative;
 }
-.search-bar input[type=text] {
+.search-bar input[type=search] {
   font-size: 20px;
   text-decoration: none;
   font-weight: normal;
@@ -128,11 +128,114 @@
   transition: ease-in-out 100ms;
   border-radius: 30px;
 }
-.search-bar input[type=text]:focus {
+.search-bar input[type=search]:focus {
   box-shadow: inset 0px 0px 0px 2px black;
 }
 .search-bar input[type=submit] {
   display: none;
+}
+
+h2 {
+  font-size: 22px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+}
+
+#signin-container {
+  position: fixed;
+  display: flex;
+  right: 3rem;
+  flex-direction: column;
+  align-items: center;
+  width: 258px;
+}
+
+#signin-btn {
+  background-color: #f5e5bf;
+  padding: 1rem;
+  border: 1px solid black;
+  border-top-width: 0px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  cursor: pointer;
+}
+
+#signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5e5bf;
+  border: 1px solid black;
+  border-top-width: 0px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  padding: 1rem;
+  gap: 1rem;
+  width: 258px;
+}
+#signin #close-signin {
+  border: none;
+  background-color: #f5e5bf;
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  color: #ca971e;
+}
+#signin .user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+#signin .user-info svg {
+  width: 16px;
+}
+#signin .user-info .user-info-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  padding: 2px;
+}
+#signin .user-info label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+#signin .user-info label input {
+  padding: 2px;
+}
+#signin .user-info input[type=submit] {
+  font-size: 22px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  font-size: 18px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #efd492;
+  width: 100%;
+  cursor: pointer;
+}
+#signin .user-info #signin-warning {
+  font-size: 16px;
+  font-style: italic;
+  color: red;
+  align-self: center;
+}
+#signin a {
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: normal;
+  color: rgb(28, 52, 189);
+  width: fit-content;
+  border: none;
+  background-color: #f5e5bf;
+  cursor: pointer;
 }
 
 * {
@@ -149,15 +252,16 @@
   -webkit-font-smoothing: antialiased;
 }
 
-#root {
+.App {
   display: flex;
+  height: 100vh;
   justify-content: center;
   background-color: rgb(252, 247, 235);
+  overflow: hidden;
 }
 
-.App {
+.main {
   width: 100%;
-  height: 100vh;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -170,7 +274,7 @@
 }
 
 @media screen and (min-width: 848px) {
-  .App {
+  .main {
     width: 848px;
   }
 }

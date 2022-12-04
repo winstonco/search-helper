@@ -69,7 +69,7 @@ export function Search(props) {
         <label>
           <input
             className="search-bar-input"
-            type="text"
+            type="search"
             value={question}
             placeholder="Enter a question or search terms..."
             onChange={(event) => {

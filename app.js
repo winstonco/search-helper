@@ -13,11 +13,24 @@ app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
 
+// Register
 app.post('/api/createUser', async (req, res) => {
-  const { name } = req.body;
-  const newUser = await users.insertOne({ name });
-  console.log(JSON.stringify(newUser));
-  res.json(JSON.stringify(newUser));
+  const { username, password } = req.body;
+  const userpass = username + '_' + password;
+  try {
+    const newUser = await users.insertOne({ username, password, userpass });
+    console.log(newUser);
+    res.json(newUser);
+  } catch (err) {
+    console.log(
+      `Error when creating new user (username: ${username}, password: ${password}`
+    );
+    res
+      .status(409)
+      .send(
+        `Error when creating new user (username: ${username}, password: ${password}`
+      );
+  }
 });
 
 app.get('/api/users', async (req, res) => {
@@ -25,10 +38,21 @@ app.get('/api/users', async (req, res) => {
   res.send(await cursor.toArray());
 });
 
-app.get('/api/read', async (req, res) => {
+app.post('/api/getUser', async (req, res) => {
+  const { username, password } = req.body;
+  const userpass = username + '_' + password;
+  const query = { userpass };
+  const projection = { userpass: 1 };
+  const result = await users.find(query).project(projection).next();
+  res.json(result);
+});
+
+app.post('/api/read', async (req, res) => {
   const { _id } = req.body;
-  const myUser = await users.findOne({ _id: ObjectID(_id) });
-  res.send(myUser);
+  const query = { _id: ObjectID(_id) };
+  const options = { projection: { _id: 0, userpass: 0 } };
+  const result = await users.findOne(query, options);
+  res.json(result);
 });
 
 app.delete('/api/deleteUser', async (req, res) => {
