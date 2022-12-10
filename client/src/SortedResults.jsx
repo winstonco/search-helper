@@ -1,27 +1,40 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { addLink, readUser, remLink } from './modules/useEndpoints';
+import { getIdCookie, isLoggedIn } from './modules/cookieHandler';
+import { useEffect } from 'react';
 
 export function SortedResults(props) {
   const navigate = useNavigate();
-  // TEMP DATABASE
-  /*
-  users.john.saved {
-    google {
-      []
+  const [googleLinks, setGoogleLinks] = useState([]);
+  const [seLinks, setSeLinks] = useState([]);
+
+  const setStarredArrays = useCallback(async () => {
+    if (props.isLoggedIn) {
+      await readUser(getIdCookie()).then((res) =>
+        res.json().then((res) => {
+          console.log(res.saved.google);
+          setGoogleLinks(res.saved.google);
+        })
+      );
+      await readUser(getIdCookie()).then((res) =>
+        res.json().then((res) => {
+          setSeLinks(res.saved.se);
+        })
+      );
+    } else {
+      setGoogleLinks([]);
+      setSeLinks([]);
     }
-    se {
-      [id0, id1, ...]
-    }
-  }
-  */
-  const [googleLinks, setGoogleLinks] = useState([
-    'https://en.wikipedia.org/wiki/A',
-    'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a',
-  ]);
+  }, [props.isLoggedIn]);
+
+  useEffect(() => {
+    setStarredArrays();
+  }, [setStarredArrays]);
 
   // Sort
   const results = props.rawArticles || [];
@@ -47,43 +60,68 @@ export function SortedResults(props) {
    * @returns A FontAwesome star icon, either a filled in or regular star if starred or not.
    */
   const checkStarred = (link, site) => {
-    if (googleLinks.includes(link)) {
-      return (
-        <button onClick={() => remFav(link)}>
-          <FontAwesomeIcon icon={faStarSolid} />
-        </button>
-      );
+    switch (site) {
+      case 'google':
+        if (googleLinks.includes(link)) {
+          return (
+            <button onClick={() => remFav(link)}>
+              <FontAwesomeIcon icon={faStarSolid} />
+            </button>
+          );
+        } else {
+          return (
+            <button onClick={() => addFav(link)}>
+              <FontAwesomeIcon icon={faStarReg} />
+            </button>
+          );
+        }
+      case 'se':
+        if (seLinks.includes(link)) {
+          return (
+            <button onClick={() => remFav(link)}>
+              <FontAwesomeIcon icon={faStarSolid} />
+            </button>
+          );
+        } else {
+          return (
+            <button onClick={() => addFav(link)}>
+              <FontAwesomeIcon icon={faStarReg} />
+            </button>
+          );
+        }
+      default:
+        return (
+          <button onClick={() => addFav(link)}>
+            <FontAwesomeIcon icon={faStarReg} />
+          </button>
+        );
     }
-    return (
-      <button onClick={() => addFav(link)}>
-        <FontAwesomeIcon icon={faStarReg} />
-      </button>
-    );
   };
 
   /*
   Add and remove favorites from the temp data list
   */
-  const addFav = (link) => {
-    // debugger;
-    // Add link to data
-    // data.googleLinks.push(link);
-    setGoogleLinks(googleLinks.splice(0, 0, link));
-    // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-    console.table(googleLinks);
+  const addFav = async (link) => {
+    if (isLoggedIn()) {
+      // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
+      await addLink(getIdCookie(), props.site, link);
+      console.log(`Added link: ${link}`);
+      setStarredArrays();
+    }
   };
-  const remFav = (link) => {
-    // Add link to data
-    let i = googleLinks.indexOf(link);
-    setGoogleLinks(googleLinks.splice(i, 1));
-    // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-    console.table(googleLinks);
+  const remFav = async (link) => {
+    if (isLoggedIn()) {
+      // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
+      await remLink(getIdCookie(), props.site, link);
+      console.log(`Removed link: ${link}`);
+      setStarredArrays();
+    }
   };
 
-  const resultsList = results.map((item) => {
+  let resultsList;
+  resultsList = results.map((item) => {
     // using default props.sort
     // sort articles and set resultsList
-    // console.log(item);
     return (
       <li key={item.id}>
         <a href={item.link} target="_blank" rel="nooperner noreferrer">

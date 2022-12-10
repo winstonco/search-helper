@@ -17,8 +17,14 @@ app.listen(PORT, () => {
 app.post('/api/createUser', async (req, res) => {
   const { username, password } = req.body;
   const userpass = username + '_' + password;
+  const saved = { google: [], se: [] };
   try {
-    const newUser = await users.insertOne({ username, password, userpass });
+    const newUser = await users.insertOne({
+      username,
+      password,
+      userpass,
+      saved,
+    });
     console.log(newUser);
     res.json(newUser);
   } catch (err) {
@@ -61,22 +67,31 @@ app.delete('/api/deleteUser', async (req, res) => {
   res.send(result);
 });
 
-app.put('/api/update/addLink', async (req, res) => {
-  const { _id, link } = req.body;
-  const result = await users.updateOne(
-    { _id: ObjectID(_id) },
-    { $addToSet: { saved: link } }
-  );
-  res.send(result);
+app.put('/api/addLink', async (req, res) => {
+  const { _id, site, link } = req.body;
+  const query = { _id: ObjectID(_id) };
+  const key = `saved.${site}`;
+  const update = { $addToSet: { [key]: link } };
+  const result = await users.updateOne(query, update);
+  res.json(result);
 });
 
-app.put('/api/update/remLink', async (req, res) => {
-  const { _id, link } = req.body;
-  const result = await users.updateOne(
-    { _id: ObjectID(_id) },
-    { $pull: { saved: link } }
-  );
-  res.send(result);
+app.put('/api/remLink', async (req, res) => {
+  const { _id, site, link } = req.body;
+  const query = { _id: ObjectID(_id) };
+  const key = `saved.${site}`;
+  const update = { $pull: { [key]: link } };
+  const result = await users.updateOne(query, update);
+  res.json(result);
+});
+
+app.post('/api/containsLink', async (req, res) => {
+  const { _id, site, link } = req.body;
+  const key = `saved.${site}`;
+  console.log('test');
+  const query = { _id: ObjectID(_id), [key]: link };
+  const result = await users.find(query).next();
+  result !== '' ? res.send('true') : res.send('false');
 });
 
 app.delete('/api/deleteAll', async (req, res) => {

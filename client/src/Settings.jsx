@@ -32,14 +32,14 @@ export function Settings(props) {
       <div className={optionsClass}>
         <div className="pick-site">
           <p>Site</p>
-          <select onChange={changeSite}>
+          <select onChange={changeSite} disabled={!isOpen}>
             <option value="google">Google</option>
             <option value="stackexchange">Stack Exchange</option>
           </select>
         </div>
         <div className="pick-sort">
           <p>Sort By</p>
-          <select onChange={changeSort}>
+          <select onChange={changeSort} disabled={!isOpen}>
             <option value="relevancy">Relevancy</option>
             <option value="date">Date</option>
             <option value="starred">Starred</option>

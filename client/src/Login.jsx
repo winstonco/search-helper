@@ -3,6 +3,7 @@ import {
   setIdCookie,
   getIdCookie,
   removeIdCookie,
+  isLoggedIn,
 } from './modules/cookieHandler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
@@ -21,20 +22,25 @@ export function Login(props) {
    * author: Paul Fitzgerald
    */
   const ref = useRef(null);
-  const handleClickOutside = (event) => {
-    if (ref.current && !ref.current.contains(event.target)) {
-      handleClose();
-    }
-  };
 
   useEffect(() => {
+    // Once on render
+    // Read cookies to update user data
+    setUserData();
+
+    // Handle click helper for signin window
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        handleClose();
+      }
+    };
     document.addEventListener('click', handleClickOutside, true);
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
     };
-  });
+  }, []);
 
-  const handleSubmit = async (event) => {
+  const handleSignIn = async (event) => {
     event.preventDefault();
     getUser(username, password)
       .then((res) => res.json())
@@ -51,6 +57,13 @@ export function Login(props) {
       });
   };
 
+  const handleSignOut = () => {
+    removeIdCookie();
+    setUserData();
+    handleClose();
+    alert('Successfully logged out!');
+  };
+
   const handleClose = () => {
     setUsername('');
     setPassword('');
@@ -58,17 +71,20 @@ export function Login(props) {
   };
 
   const setUserData = async () => {
-    await readUser(getIdCookie())
-      .then((res) => res.json())
-      .then((res) => {
-        setCurrentUser(res.username);
-      })
-      .catch((err) => {
-        setCurrentUser();
-        console.log('No userIdCookie info stored.');
-      });
+    props.setIsLoggedIn(isLoggedIn());
+    if (props.isLoggedIn) {
+      await readUser(getIdCookie())
+        .then((res) => res.json())
+        .then((res) => {
+          setCurrentUser(res.username);
+        })
+        .catch((err) => {
+          setCurrentUser();
+          console.error(err);
+          console.log('No userIdCookie info stored.');
+        });
+    }
   };
-  setUserData();
 
   let signIn;
   // Sign in form not open
@@ -85,7 +101,7 @@ export function Login(props) {
     );
   } else {
     // Sign in form open, if logged in show user and log out
-    if (currentUser) {
+    if (isLoggedIn()) {
       signIn = (
         <div id="signin" role="dialog" ref={ref}>
           <button id="close-signin" onClick={handleClose}>
@@ -99,14 +115,7 @@ export function Login(props) {
               <p>{currentUser}</p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              removeIdCookie();
-              setUserData();
-            }}
-          >
-            Sign Out?
-          </button>
+          <button onClick={handleSignOut}>Sign Out?</button>
         </div>
       );
     } else {
@@ -116,7 +125,7 @@ export function Login(props) {
             <FontAwesomeIcon icon={faX} size="1x" />
           </button>
           <h2>Sign In</h2>
-          <form className="user-info" method="dialog" onSubmit={handleSubmit}>
+          <form className="user-info" method="dialog" onSubmit={handleSignIn}>
             <label>
               <FontAwesomeIcon icon={faUser} />
               <input

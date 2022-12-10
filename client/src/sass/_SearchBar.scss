@@ -6,7 +6,7 @@
     align-items: center;
     position: relative;
   }
-  input[type='search'] {
+  input[type='text'] {
     @include font-normal;
     font-weight: lighter;
     width: 100%;

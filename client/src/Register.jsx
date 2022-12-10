@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setIdCookie } from './modules/cookieHandler';
@@ -29,36 +29,41 @@ export function Register() {
   };
 
   return (
-    <div className="register">
-      <h1>Register:</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <FontAwesomeIcon icon={faUser} size="xl" />
-          <input
-            type="text"
-            placeholder="Username:"
-            value={username}
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
-            required
-          />
-        </label>
-        <label>
-          <FontAwesomeIcon icon={faKey} size="xl" />
-          <input
-            type="password"
-            placeholder="Password:"
-            value={password}
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
-            required
-          />
-        </label>
-        <input type="submit" value="Register" />
-      </form>
-      <p class="font-warning">{warning}</p>
+    <div className="main">
+      <a href="/">
+        <h1>Search Helper</h1>
+      </a>
+      <div className="register">
+        <h1>Register:</h1>
+        <form onSubmit={handleSubmit}>
+          <label>
+            <FontAwesomeIcon icon={faUser} size="xl" />
+            <input
+              type="text"
+              placeholder="Username:"
+              value={username}
+              onChange={(event) => {
+                setUsername(event.target.value);
+              }}
+              required
+            />
+          </label>
+          <label>
+            <FontAwesomeIcon icon={faKey} size="xl" />
+            <input
+              type="password"
+              placeholder="Password:"
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+              required
+            />
+          </label>
+          <input type="submit" value="Register" />
+        </form>
+        <p class="font-warning">{warning}</p>
+      </div>
     </div>
   );
 }

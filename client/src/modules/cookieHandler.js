@@ -23,7 +23,7 @@ const getIdCookie = () => {
 };
 
 const removeIdCookie = () => {
-  if (getIdCookie !== '') {
+  if (isLoggedIn()) {
     cookies.remove('myId', {
       path: '/',
       secure: false,
@@ -33,4 +33,8 @@ const removeIdCookie = () => {
   }
 };
 
-export { setIdCookie, getIdCookie, removeIdCookie };
+const isLoggedIn = () => {
+  return getIdCookie() !== undefined;
+};
+
+export { isLoggedIn, setIdCookie, getIdCookie, removeIdCookie };
