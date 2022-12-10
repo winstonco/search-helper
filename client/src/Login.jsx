@@ -102,6 +102,7 @@ export function Login(props) {
   } else {
     // Sign in form open, if logged in show user and log out
     if (isLoggedIn()) {
+      setUserData();
       signIn = (
         <div id="signin" role="dialog" ref={ref}>
           <button id="close-signin" onClick={handleClose}>

@@ -19,6 +19,7 @@ export function Register() {
       .then((res) => {
         setIdCookie(res.insertedId);
         navigate('/results');
+        alert('User successfully created!');
       })
       .catch((err) => {
         console.error(err);
