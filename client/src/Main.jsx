@@ -9,6 +9,7 @@ export function Main() {
   const [sort, setSort] = useState('default');
   const [rawArticles, setRawArticles] = useState();
   const [site, setSite] = useState('google');
+  const [seSite, setSeSite] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
@@ -22,10 +23,12 @@ export function Main() {
         <div className="search">
           <Search
             setRawArticles={setRawArticles}
-            setSort={setSort}
             sort={sort}
-            setSite={setSite}
+            setSort={setSort}
             site={site}
+            setSite={setSite}
+            seSite={seSite}
+            setSeSite={setSeSite}
           />
           <Routes>
             <Route
@@ -39,7 +42,10 @@ export function Main() {
                 />
               }
             />
-            <Route path="/saved" element={<SavedResults />} />
+            <Route
+              path="/saved"
+              element={<SavedResults site={site} isLoggedIn={isLoggedIn} />}
+            />
           </Routes>
         </div>
       </div>

@@ -80,7 +80,6 @@ export function Login(props) {
         })
         .catch((err) => {
           setCurrentUser();
-          console.error(err);
           console.log('No userIdCookie info stored.');
         });
     }

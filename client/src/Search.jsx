@@ -3,13 +3,13 @@ import { Searcher } from './modules/searcher.js';
 import { Settings } from './Settings.jsx';
 import { useNavigate } from 'react-router-dom';
 
-const searcher = new Searcher('languagelearning');
+const searcher = new Searcher();
 
 export function Search(props) {
   const navigate = useNavigate();
-
   const [question, setQuestion] = useState('');
   let site = props.site;
+  let seSite = props.seSite;
   let sort = props.sort;
 
   const updateResults = async () => {
@@ -21,9 +21,9 @@ export function Search(props) {
     console.log(sq);
     console.log(site);
     switch (site) {
-      case 'stackexchange':
+      case 'se':
         props.setRawArticles(
-          await searcher.searchStackExchange('languagelearning', sq, sort)
+          await searcher.searchStackExchange(seSite, sq, sort)
         );
         break;
       case 'google':
@@ -38,6 +38,12 @@ export function Search(props) {
   };
 
   const handleSiteChange = (newSite) => {
+    if (newSite === 'se') {
+      prompt(
+        'What site in the Stack Exchange network to search from?',
+        'stackoverflow.com'
+      );
+    }
     props.setSite(newSite);
     site = newSite;
     console.log(newSite);

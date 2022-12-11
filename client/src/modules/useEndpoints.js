@@ -41,7 +41,7 @@ const readUser = async (id) => {
   });
 };
 
-const addLink = async (_id, site, link) => {
+const addLink = async (_id, site, title, link) => {
   return await fetch(ENDPOINT_URL + 'addLink', {
     method: 'PUT',
     mode: 'cors',
@@ -51,12 +51,13 @@ const addLink = async (_id, site, link) => {
     body: JSON.stringify({
       _id,
       site,
+      title,
       link,
     }),
   });
 };
 
-const remLink = async (_id, site, link) => {
+const remLink = async (_id, site, title, link) => {
   return await fetch(ENDPOINT_URL + 'remLink', {
     method: 'PUT',
     mode: 'cors',
@@ -66,12 +67,13 @@ const remLink = async (_id, site, link) => {
     body: JSON.stringify({
       _id,
       site,
+      title,
       link,
     }),
   });
 };
 
-const containsLink = async (_id, site, link) => {
+const containsLink = async (_id, site, title, link) => {
   return await fetch(ENDPOINT_URL + 'containsLink', {
     method: 'POST',
     mode: 'cors',
@@ -81,6 +83,7 @@ const containsLink = async (_id, site, link) => {
     body: JSON.stringify({
       _id,
       site,
+      title,
       link,
     }),
   }).then((res) => res.json());

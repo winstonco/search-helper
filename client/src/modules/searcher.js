@@ -58,6 +58,7 @@ export class Searcher {
    * @async
    * @param {string} site The site property in the SE API call.
    * @param {SearchQuery} query The SearchQuery.
+   * @param {string} sort The sort used to filter results.
    * @returns {Promise<{title, link, id}[]>} An array of {title, link, id} objects.
    */
   async searchStackExchange(site, query, sort) {
@@ -113,6 +114,7 @@ export class Searcher {
    * Takes a SearchQuery instance and returns a list of relevant search results from Google.
    * @async
    * @param {SearchQuery} query The SearchQuery.
+   * @param {string} sort The sort used to filter results.
    * @returns {Promise<{title, link, id}[]>} An array of {title, link, id} objects.
    */
   async searchGoogle(query, sort) {

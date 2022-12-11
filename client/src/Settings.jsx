@@ -34,7 +34,7 @@ export function Settings(props) {
           <p>Site</p>
           <select onChange={changeSite} disabled={!isOpen}>
             <option value="google">Google</option>
-            <option value="stackexchange">Stack Exchange</option>
+            <option value="se">Stack Exchange</option>
           </select>
         </div>
         <div className="pick-sort">

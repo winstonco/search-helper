@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarReg } from '@fortawesome/free-regular-svg-icons';
@@ -17,7 +16,6 @@ export function SortedResults(props) {
     if (props.isLoggedIn) {
       await readUser(getIdCookie()).then((res) =>
         res.json().then((res) => {
-          console.log(res.saved.google);
           setGoogleLinks(res.saved.google);
         })
       );
@@ -39,13 +37,40 @@ export function SortedResults(props) {
   // Sort
   const results = props.rawArticles || [];
   if (results && results.length > 0) {
-    //debugger;
     switch (props.sort) {
       case 'date':
         // sort raw by date, mutating raw
         //raw.forEach();
         break;
-      case 'relevant':
+      case 'relevancy':
+        console.log('relevancy');
+        break;
+      case 'starred':
+        // When sorting by starred, check in the right list
+        switch (props.site) {
+          case 'google':
+            results.sort((a, b) => {
+              if (googleLinks.some((item) => item.link === a.link)) {
+                return -1;
+              } else if (googleLinks.some((item) => item.link === b.link)) {
+                return 1;
+              }
+              return 0;
+            });
+            break;
+          case 'se':
+            results.sort((a, b) => {
+              if (seLinks.some((item) => item.link === a.link)) {
+                return -1;
+              } else if (seLinks.some((item) => item.link === b.link)) {
+                return 1;
+              }
+              return 0;
+            });
+            break;
+          default:
+            console.error('Unknown Site');
+        }
         break;
       default:
         console.log('default sort');
@@ -59,60 +84,57 @@ export function SortedResults(props) {
    * @param {String} site The site to check.
    * @returns A FontAwesome star icon, either a filled in or regular star if starred or not.
    */
-  const checkStarred = (link, site) => {
+  const checkStarred = (site, title, link) => {
     switch (site) {
       case 'google':
-        if (googleLinks.includes(link)) {
+        if (googleLinks.some((item) => item.link === link)) {
           return (
-            <button onClick={() => remFav(link)}>
+            <button onClick={() => remFav(site, title, link)}>
               <FontAwesomeIcon icon={faStarSolid} />
             </button>
           );
         } else {
           return (
-            <button onClick={() => addFav(link)}>
+            <button onClick={() => addFav(site, title, link)}>
               <FontAwesomeIcon icon={faStarReg} />
             </button>
           );
         }
       case 'se':
-        if (seLinks.includes(link)) {
+        if (seLinks.some((item) => item.link === link)) {
           return (
-            <button onClick={() => remFav(link)}>
+            <button onClick={() => remFav(site, title, link)}>
               <FontAwesomeIcon icon={faStarSolid} />
             </button>
           );
         } else {
           return (
-            <button onClick={() => addFav(link)}>
+            <button onClick={() => addFav(site, title, link)}>
               <FontAwesomeIcon icon={faStarReg} />
             </button>
           );
         }
       default:
         return (
-          <button onClick={() => addFav(link)}>
+          <button onClick={() => addFav(link, site)}>
             <FontAwesomeIcon icon={faStarReg} />
           </button>
         );
     }
   };
 
-  /*
-  Add and remove favorites from the temp data list
-  */
-  const addFav = async (link) => {
+  const addFav = async (site, title, link) => {
     if (isLoggedIn()) {
-      // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-      await addLink(getIdCookie(), props.site, link);
+      await addLink(getIdCookie(), site, title, link);
       console.log(`Added link: ${link}`);
       setStarredArrays();
+    } else {
+      alert('You must be signed in to save search results!');
     }
   };
-  const remFav = async (link) => {
+  const remFav = async (site, title, link) => {
     if (isLoggedIn()) {
-      // star === faStarReg ? (star = faStarSolid) : (star = faStarReg);
-      await remLink(getIdCookie(), props.site, link);
+      await remLink(getIdCookie(), site, title, link);
       console.log(`Removed link: ${link}`);
       setStarredArrays();
     }
@@ -125,9 +147,9 @@ export function SortedResults(props) {
     return (
       <li key={item.id}>
         <a href={item.link} target="_blank" rel="nooperner noreferrer">
-          {parse(item.title)}
+          {item.title}
         </a>
-        {checkStarred(item.link, props.site)}
+        {checkStarred(props.site, item.title, item.link)}
       </li>
     );
   });
@@ -144,7 +166,11 @@ export function SortedResults(props) {
         </button>
         <button
           onClick={() => {
-            navigate('/saved');
+            if (isLoggedIn()) {
+              navigate('/saved');
+            } else {
+              alert('You must be signed in to see saved searches!');
+            }
           }}
         >
           <h3>Saved</h3>
