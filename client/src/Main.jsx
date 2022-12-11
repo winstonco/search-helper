@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Login } from './Login';
 
 export function Main() {
-  const [sort, setSort] = useState('default');
+  const [sort, setSort] = useState('');
   const [rawArticles, setRawArticles] = useState();
   const [site, setSite] = useState('google');
   const [seSite, setSeSite] = useState('');
@@ -23,7 +23,7 @@ export function Main() {
         <div className="search">
           <Search
             setRawArticles={setRawArticles}
-            sort={sort}
+            sortby={sort}
             setSort={setSort}
             site={site}
             setSite={setSite}

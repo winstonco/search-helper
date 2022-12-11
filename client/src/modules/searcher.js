@@ -80,6 +80,8 @@ export class Searcher {
     }
     if (site) {
       reqURL += `&site=${site}`;
+    } else {
+      reqURL += `&site=stackoverflow`;
     }
 
     console.log('Request: ' + reqURL);
