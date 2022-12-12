@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Login } from './Login';
 
 export function Main() {
-  const [sort, setSort] = useState('');
+  const [sort, setSort] = useState('relevancy');
   const [rawArticles, setRawArticles] = useState();
   const [site, setSite] = useState('google');
   const [seSite, setSeSite] = useState('');
