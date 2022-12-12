@@ -6,17 +6,17 @@ import { useEffect } from 'react';
 
 const searcher = new Searcher();
 
-export function Search(props) {
+export function Search({ site, seSite, sortby }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [question, setQuestion] = useState(searchParams.q);
 
-  let site = props.site;
+  // let site = site;
   //props.setSite(searchParams.site);
-  let seSite = props.seSite;
+  // let seSite = seSite;
   //props.setSeSite(searchParams.seSite);
-  let sort = props.sortby;
+  let sort = sortby;
   //props.setSort(searchParams.sortby);
 
   const updateResults = async () => {
@@ -41,7 +41,7 @@ export function Search(props) {
     // console.table(rawArticles);
   };
 
-  const handleSiteChange = (newSite) => {
+  const handleSiteChange = async (newSite) => {
     if (!seSite) {
       if (newSite === 'se') {
         seSite = prompt(
@@ -54,20 +54,20 @@ export function Search(props) {
     props.setSite(newSite);
     site = newSite;
     console.log(seSite);
-    updateResults();
+    await updateResults();
     updateSearchParams();
   };
 
-  const handleSortChange = (newSort) => {
+  const handleSortChange = async (newSort) => {
     props.setSort(newSort);
     sort = newSort;
     console.log(newSort);
-    updateResults();
+    await updateResults();
     updateSearchParams();
   };
 
-  const submitReq = () => {
-    updateResults();
+  const submitReq = async () => {
+    await updateResults();
     updateSearchParams();
   };
 
