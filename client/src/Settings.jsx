@@ -19,7 +19,7 @@ export function Settings(props) {
     props.setSort(event.target.value);
   };
 
-  const handleClickGear = () => {
+  const handleClick = () => {
     isOpen
       ? setIconClass('settings-icon')
       : setIconClass('settings-icon rotate120');
@@ -50,7 +50,7 @@ export function Settings(props) {
         <FontAwesomeIcon
           icon={faGear}
           className={iconClass}
-          onClick={handleClickGear}
+          onClick={handleClick}
         />
       </div>
     </div>
