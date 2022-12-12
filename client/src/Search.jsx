@@ -39,9 +39,9 @@ export function Search(props) {
 
   const handleSiteChange = (newSite) => {
     if (newSite === 'se') {
-      prompt(
+      seSite = prompt(
         'What site in the Stack Exchange network to search from?',
-        'stackoverflow.com'
+        'stackoverflow'
       );
     }
     props.setSite(newSite);
