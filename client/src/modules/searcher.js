@@ -88,7 +88,6 @@ export class Searcher {
       const response = await fetch(reqURL);
       const body = await response.json();
       let items = body.items;
-      console.log();
       articles = [];
       items.forEach((item) => {
         articles.push({
@@ -144,7 +143,6 @@ export class Searcher {
       const response = await fetch(reqURL);
       const body = await response.json();
       let items = body.items;
-      console.log();
       articles = [];
       items.forEach((item) => {
         articles.push({ title: item.title, link: item.link, id: item.cacheId });
