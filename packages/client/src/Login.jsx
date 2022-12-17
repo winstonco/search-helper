@@ -5,6 +5,7 @@ import {
   removeIdCookie,
   isLoggedIn,
 } from './modules/cookieHandler';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
 import { getUser, readUser } from './modules/useEndpoints';
@@ -153,7 +154,7 @@ export function Login(props) {
             <input type="submit" value="Sign In" />
             <p className="font-warning">{warning}</p>
           </form>
-          <a href="/register">Don't have a login? Register here</a>
+          <Link to="/register">Don't have a login? Register here</Link>
         </div>
       );
     }

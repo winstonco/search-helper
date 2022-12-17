@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { setIdCookie } from './modules/cookieHandler';
 import { createUser } from './modules/useEndpoints';
 
@@ -31,9 +31,9 @@ export function Register() {
 
   return (
     <div className="main">
-      <a href="/">
+      <Link to="/">
         <h1>Search Helper</h1>
-      </a>
+      </Link>
       <div className="register">
         <h1>Register:</h1>
         <form onSubmit={handleSubmit}>

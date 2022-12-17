@@ -1,4 +1,6 @@
-const ENDPOINT_URL = 'search-helper-production.up.railway.app/api/';
+//const ENDPOINT_URL = 'http://localhost:3001/api/';
+const ENDPOINT_URL = '/api/';
+//const ENDPOINT_URL = 'search-helper-production.up.railway.app/api/';
 
 const getUser = async (username, password) => {
   return await fetch(ENDPOINT_URL + 'getUser', {
