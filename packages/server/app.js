@@ -12,8 +12,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/', express.static(CLIENT_APPLICATION));
 app.use('/api', api);
+app.use('', express.static(CLIENT_APPLICATION));
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
