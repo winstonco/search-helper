@@ -2,7 +2,7 @@ import { Search } from './Search';
 import React, { useState } from 'react';
 import { SortedResults } from './SortedResults';
 import { SavedResults } from './SavedResults';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { Login } from './Login';
 
 export function Main() {
@@ -16,9 +16,9 @@ export function Main() {
     <>
       <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div className="main">
-        <a href="/">
+        <Link to="/">
           <h1>Search Helper</h1>
-        </a>
+        </Link>
 
         <div className="search">
           <Search
