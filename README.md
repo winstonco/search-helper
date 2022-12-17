@@ -1,8 +1,9 @@
 # SearchHelper
+
 A tool to search things.
 Input a query with optional operators/operands
 
-### Operators:
+### Search Operators:
 
 -- : don't include
 

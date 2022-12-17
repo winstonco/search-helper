@@ -1,0 +1,8 @@
+@mixin focusBorder {
+  border: 0;
+  box-shadow: inset 0px 0px 0px 1px black;
+  transition: ease-in-out 100ms;
+  &:focus {
+    box-shadow: inset 0px 0px 0px 2px black;
+  }
+}

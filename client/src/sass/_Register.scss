@@ -1,0 +1,46 @@
+.register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+
+  h1 {
+    @include font-subtitle;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 50%;
+
+    label {
+      svg {
+        min-width: 24px;
+      }
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+
+      input {
+        padding: 6px;
+        width: 100%;
+      }
+    }
+
+    input[type='submit'] {
+      @include font-signin;
+      font-size: 18px;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: darken($login-color, 10%);
+      width: 100%;
+      cursor: pointer;
+    }
+  }
+}

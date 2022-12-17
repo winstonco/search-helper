@@ -1,0 +1,95 @@
+$login-color: darken($bg-color, 10%);
+
+h2 {
+  @include font-signin;
+}
+
+#signin-container {
+  position: fixed;
+  display: flex;
+  right: 3rem;
+  flex-direction: column;
+  align-items: center;
+  width: 258px;
+}
+
+#signin-btn {
+  background-color: $login-color;
+  padding: 1rem;
+  border: 1px solid black;
+  border-top-width: 0px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  cursor: pointer;
+}
+
+#signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $login-color;
+  border: 1px solid black;
+  border-top-width: 0px;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  padding: 1rem;
+  gap: 1rem;
+  width: 258px;
+
+  #close-signin {
+    border: none;
+    background-color: $login-color;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    color: darken($login-color, 40%);
+  }
+
+  .user-info {
+    svg {
+      min-width: 16px;
+    }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+
+    .user-info-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+      padding: 2px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+
+      input {
+        padding: 2px;
+      }
+    }
+
+    input[type='submit'] {
+      @include font-signin;
+      font-size: 18px;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: darken($login-color, 10%);
+      width: 100%;
+      cursor: pointer;
+    }
+  }
+
+  a,
+  button {
+    @include font-register;
+    width: fit-content;
+    border: none;
+    background-color: $login-color;
+    cursor: pointer;
+  }
+}
