@@ -7,7 +7,6 @@ const UserSchema = new Schema({
   _id: ObjectId,
   username: { type: String, unique: true, required: true, dropDups: true },
   password: { type: String, required: true },
-  savedLinks: [{ type: ObjectId, ref: 'Link' }],
 });
 
 export const User = mongoose.model('User', UserSchema);

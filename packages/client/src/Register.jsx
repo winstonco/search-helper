@@ -14,19 +14,17 @@ export function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     //debugger;
-    createUser(username, password)
-      .then((res) => res.json())
-      .then((res) => {
-        setIdCookie(res.insertedId);
-        navigate('/results');
-        alert('User successfully created!');
-      })
-      .catch((err) => {
-        console.error(err);
-        console.log('Error: Username and password already exists!');
-        setPassword('');
-        setWarning('Error: Username and password already exists!');
-      });
+    try {
+      const newUser = await createUser(username, password);
+      setIdCookie(newUser._id);
+      navigate('/results');
+      alert('User successfully created!');
+    } catch (err) {
+      console.error(err);
+      console.log('Error: Username and password already exists!');
+      setPassword('');
+      setWarning('Error: Username and password already exists!');
+    }
   };
 
   return (

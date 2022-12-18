@@ -43,19 +43,17 @@ export function Login(props) {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-    getUser(username, password)
-      .then((res) => res.json())
-      .then((res) => {
-        setIdCookie(res._id);
-        setWarning('');
-        setUserData();
-        handleClose();
-        alert('Successfully logged in!');
-      })
-      .catch((err) => {
-        setWarning('Error: User not found!');
-        console.log('Error: User not found!');
-      });
+    try {
+      const user = await getUser(username, password);
+      setIdCookie(user._id);
+      setWarning('');
+      setUserData();
+      handleClose();
+      alert('Successfully logged in!');
+    } catch (err) {
+      setWarning('Error: User not found!');
+      console.log('Error: User not found!');
+    }
   };
 
   const handleSignOut = () => {
@@ -74,15 +72,17 @@ export function Login(props) {
   const setUserData = async () => {
     props.setIsLoggedIn(isLoggedIn());
     if (props.isLoggedIn) {
-      await readUser(getIdCookie())
-        .then((res) => res.json())
-        .then((res) => {
-          setCurrentUser(res.username);
-        })
-        .catch((err) => {
-          setCurrentUser();
-          console.log('No userIdCookie info stored.');
-        });
+      //debugger;
+      try {
+        const user = await readUser(getIdCookie());
+        // console.log(user);
+        // console.log(Object.keys(user));
+        setCurrentUser(user.username);
+      } catch (err) {
+        console.error(err);
+        setCurrentUser();
+        console.log('No userIdCookie info stored.');
+      }
     }
   };
 

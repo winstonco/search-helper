@@ -14,16 +14,9 @@ export function SavedResults(props) {
 
   const setStarredArrays = useCallback(async () => {
     if (props.isLoggedIn) {
-      await readUser(getIdCookie()).then((res) =>
-        res.json().then((res) => {
-          setGoogleLinks(res.saved.google);
-        })
-      );
-      await readUser(getIdCookie()).then((res) =>
-        res.json().then((res) => {
-          setSeLinks(res.saved.se);
-        })
-      );
+      const user = await readUser(getIdCookie());
+      setGoogleLinks(user.saved.google);
+      setSeLinks(user.saved.se);
     } else {
       setGoogleLinks([]);
       setSeLinks([]);
