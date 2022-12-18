@@ -1,13 +1,17 @@
-const path = require('path');
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const envVars = {
-  MONGO_URI: process.env.MONGO_URI ?? process.env.ATLAS_URI,
-  PORT: process.env.SERVER_PORT ?? 3001,
-  CLIENT_APPLICATION:
-    process.env.CLIENT_APPLICATION ?? path.join(__dirname, '../client/build'),
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-function checkEnvVars() {
+export const MONGO_URI = process.env.MONGO_URI ?? process.env.ATLAS_URI;
+export const PORT = process.env.SERVER_PORT ?? 3001;
+export const CLIENT_APPLICATION =
+  process.env.CLIENT_APPLICATION ?? path.join(__dirname, '../client/build');
+
+export const envVars = { MONGO_URI, PORT, CLIENT_APPLICATION };
+
+export function checkEnvVars() {
   for (const [key, value] of Object.entries(envVars)) {
     if (value === undefined) {
       console.error(
@@ -17,5 +21,3 @@ function checkEnvVars() {
     }
   }
 }
-
-module.exports = { ...envVars, checkEnvVars };

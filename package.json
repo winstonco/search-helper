@@ -1,19 +1,19 @@
 {
-    "name": "search-helper",
-    "private": true,
-    "version": "1.0.0",
-    "scripts": {
-        "lerna": "lerna",
-        "start": "lerna run start --stream",
-        "build": "lerna run build --stream",
-        "test": "lerna run test --stream",
-        "dev": "lerna run dev --stream",
-        "bootstrap": "lerna bootstrap"
-    },
-    "workspaces": [
-        "packages/*"
-    ],
-    "devDependencies": {
-        "lerna": "^6.1.0"
-    }
+  "name": "search-helper",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "lerna": "lerna",
+    "start": "lerna run start --stream",
+    "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
+    "dev": "lerna run dev --stream",
+    "bootstrap": "lerna bootstrap"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.1.0"
+  }
 }
