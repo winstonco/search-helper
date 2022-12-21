@@ -1,6 +1,4 @@
-// const ENDPOINT_URL = 'http://localhost:3001/api/';
-const ENDPOINT_URL = '/api/';
-//const ENDPOINT_URL = 'search-helper-production.up.railway.app/api/';
+const ENDPOINT_URL = process.env.REACT_APP_ENDPOINT_URL ?? '/api/';
 
 const getUser = async (username, password) => {
   return await (

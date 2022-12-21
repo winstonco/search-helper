@@ -10,6 +10,15 @@ const saltRounds = 10;
 
 const router = express.Router();
 
+/**
+ * Creates a new user document. Given password is encrypted.
+ * Duplicate usernames not allowed.
+ *
+ * req.body:
+ * @param username The new user's username
+ * @param password The new user's password
+ * @returns { _id, username } The new user's oid and username
+ */
 router.post('/createUser', async (req, res) => {
   const { username, password } = req.body;
 
@@ -25,17 +34,26 @@ router.post('/createUser', async (req, res) => {
       username,
       password: hashed,
     });
-    console.log(newUser);
+    // console.log(newUser);
     res.json({ _id: newUser._id, username: newUser.username });
   } catch (err) {
     console.log(`Error when creating new user (username: ${username})`);
     console.log(err);
     res
       .status(409)
-      .send(`Error when creating new user (username: ${username})`);
+      .json(`Error when creating new user (username: ${username})`);
   }
 });
 
+/**
+ * Login method.
+ * Gets the ObjectId of a user given username and password.
+ *
+ * req.body:
+ * @param username The username
+ * @param password The raw password
+ * @returns { _id, username } The user's oid and username
+ */
 router.post('/getUser', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -44,7 +62,7 @@ router.post('/getUser', async (req, res) => {
     if (isValid) {
       res.json({ _id: myUser._id, username: myUser.username });
     } else {
-      res.status(400).send('Invalid username or password');
+      res.status(400).json('Invalid username or password');
     }
   } catch (err) {
     console.error(err);
@@ -52,6 +70,13 @@ router.post('/getUser', async (req, res) => {
   }
 });
 
+/**
+ * Reads the info of a user.
+ *
+ * req.body:
+ * @param _id The ObjectId of the user
+ * @returns { username, savedLinks } The user's info
+ */
 router.post('/read', async (req, res) => {
   const { _id } = req.body;
   try {
@@ -72,7 +97,7 @@ router.post('/read', async (req, res) => {
         { $limit: 1 },
       ]).exec()
     )[0];
-    console.log(util.inspect(user, false, 100, true));
+    // console.log(util.inspect(user, false, 100, true));
     // console.log(Link.collection);
     // console.log(myUser);
     res.json({ username: user.username, savedLinks: user.savedLinks });
@@ -82,17 +107,32 @@ router.post('/read', async (req, res) => {
   }
 });
 
+/**
+ * Deletes a user.
+ *
+ * req.body:
+ * @param _id The ObjectId of the user
+ */
 router.delete('/deleteUser', async (req, res) => {
   const { _id } = req.body;
   try {
     await User.deleteOne({ _id }).exec();
-    res.send('Successfully deleted user');
+    res.json('Successfully deleted user');
   } catch (err) {
     console.error(err);
     res.status(400).json(err);
   }
 });
 
+/**
+ * Saves a link to a user.
+ *
+ * req.body:
+ * @param _id The ObjectId of the user
+ * @param site The source (google or se)
+ * @param title The title of the link
+ * @param link The link url
+ */
 router.put('/addLink', async (req, res) => {
   const { _id, site, title, link } = req.body;
   try {
@@ -107,21 +147,42 @@ router.put('/addLink', async (req, res) => {
     res.json(newLink);
   } catch (err) {
     console.error(err);
-    res.status(400).send(`Failed to add Link of (${title}, ${link})`);
+    res.status(400).json(`Failed to add Link of (${title}, ${link})`);
   }
 });
 
+/**
+ * Removes a saved link tied to a user.
+ *
+ * req.body:
+ * @param _id The ObjectId of the user
+ * @param site The source (google or se)
+ * @param title The title of the link
+ * @param link The link url
+ */
 router.put('/remLink', async (req, res) => {
-  const { _id } = req.body;
+  const { _id, site, title, link } = req.body;
   try {
-    await Link.deleteOne({ _id }).exec();
-    res.send('Successfully deleted link');
+    res.json(
+      await Link.deleteOne({ user: _id, source: site, title, link }).exec()
+    );
   } catch (err) {
     console.error(err);
     res.status(400).json(err);
   }
 });
 
+/**
+ * Checks if a link is saved to a user.
+ *
+ * req.body:
+ * @param _id The ObjectId of the user
+ * @param site The source (google or se)
+ * @param title The title of the link
+ * @param link The link url
+ *
+ * @returns true if the user has the link saved
+ */
 router.post('/containsLink', async (req, res) => {
   const { _id, site, title, link } = req.body;
   try {
