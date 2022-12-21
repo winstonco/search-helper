@@ -2,8 +2,6 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
-import util from 'util';
-
 import { Link, User } from './models/index.js';
 
 const saltRounds = 10;
@@ -80,9 +78,6 @@ router.post('/getUser', async (req, res) => {
 router.post('/read', async (req, res) => {
   const { _id } = req.body;
   try {
-    // const myUser = await User.findOne({ _id }).exec();
-    // // Get savedLinks
-    // const userLinks = await Link.find({ user: _id }).exec();
     const user = (
       await User.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(_id) } },
@@ -97,10 +92,11 @@ router.post('/read', async (req, res) => {
         { $limit: 1 },
       ]).exec()
     )[0];
-    // console.log(util.inspect(user, false, 100, true));
-    // console.log(Link.collection);
-    // console.log(myUser);
-    res.json({ username: user.username, savedLinks: user.savedLinks });
+    if (user !== undefined) {
+      res.json({ username: user.username, savedLinks: user.savedLinks });
+    } else {
+      res.status(400).json('Failed to read user info');
+    }
   } catch (err) {
     console.error(err);
     res.status(400).json(err);

@@ -51,8 +51,8 @@ export function Login(props) {
       handleClose();
       alert('Successfully logged in!');
     } catch (err) {
-      setWarning('Error: User not found!');
-      console.log('Error: User not found!');
+      console.error(err.message);
+      setWarning(err.message);
     }
   };
 
@@ -71,15 +71,13 @@ export function Login(props) {
 
   const setUserData = async () => {
     props.setIsLoggedIn(isLoggedIn());
-    if (props.isLoggedIn) {
+    if (isLoggedIn()) {
       //debugger;
       try {
         const user = await readUser(getIdCookie());
-        // console.log(user);
-        // console.log(Object.keys(user));
         setCurrentUser(user.username);
       } catch (err) {
-        console.error(err);
+        console.error(err.message);
         setCurrentUser();
         console.log('No userIdCookie info stored.');
       }
