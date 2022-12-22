@@ -5,32 +5,29 @@ import { useNavigate } from 'react-router-dom';
 
 const searcher = new Searcher();
 
-export function Search(props) {
+export function Search({ setRawArticles, settings, setSettings }) {
   const navigate = useNavigate();
   const [question, setQuestion] = useState('');
-  let site = props.site;
-  let seSite = props.seSite;
-  let sort = props.sort;
 
-  const updateResults = async () => {
+  const updateResults = async (site, sort, seSite = settings.seSite) => {
     if (!question) {
       return <div>No question given.</div>;
-    } //'how to --good learn chinese !-happy --expensive';
-    //debugger;
+    }
+    //'how to --good learn chinese !-happy --expensive';
     let sq = searcher.toSearchQuery(question);
+    // debugger;
     console.log(sq);
-    console.log(site);
+    console.log(settings.site);
+    console.log(settings);
     switch (site) {
       case 'se':
-        props.setRawArticles(
-          await searcher.searchStackExchange(seSite, sq, sort)
-        );
+        setRawArticles(await searcher.searchStackExchange(seSite, sq, sort));
         break;
       case 'google':
-        props.setRawArticles(await searcher.searchGoogle(sq, sort));
+        setRawArticles(await searcher.searchGoogle(sq, sort));
         break;
       default:
-        props.setRawArticles([
+        setRawArticles([
           { title: 'dummytitle', link: 'dummylink', id: 'dummyid' },
         ]);
     }
@@ -39,35 +36,42 @@ export function Search(props) {
 
   const handleSiteChange = (newSite) => {
     if (newSite === 'se') {
-      seSite = prompt(
+      const newSeSite = prompt(
         'What site in the Stack Exchange network to search from?',
         'stackoverflow'
       );
+      setSettings({
+        ...settings,
+        site: newSite,
+        seSite: newSeSite,
+      });
+      updateResults(newSite, settings.sort, newSeSite);
+    } else {
+      setSettings({
+        ...settings,
+        site: newSite,
+      });
+      updateResults(newSite, settings.sort);
     }
-    props.setSite(newSite);
-    site = newSite;
     console.log(newSite);
-    updateResults();
   };
 
   const handleSortChange = (newSort) => {
-    props.setSort(newSort);
-    sort = newSort;
+    setSettings({
+      ...settings,
+      sort: newSort,
+    });
+    updateResults(settings.site, newSort, settings.seSite);
     console.log(newSort);
-    updateResults();
   };
 
   return (
     <>
-      <Settings
-        site={site}
-        setSite={handleSiteChange}
-        setSort={handleSortChange}
-      />
+      <Settings setSite={handleSiteChange} setSort={handleSortChange} />
       <form
         className="search-bar"
         onSubmit={(event) => {
-          updateResults();
+          updateResults(settings.site, settings.sort, settings.seSite);
           event.preventDefault();
           navigate('/results');
         }}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   setIdCookie,
   getIdCookie,
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
 import { getUser, readUser } from './modules/useEndpoints';
 
-export function Login(props) {
+export function Login() {
   const [username, setUsername] = useState('');
   const [currentUser, setCurrentUser] = useState('');
   const [password, setPassword] = useState('');
@@ -23,12 +23,7 @@ export function Login(props) {
    * author: Paul Fitzgerald
    */
   const ref = useRef(null);
-
   useEffect(() => {
-    // Once on render
-    // Read cookies to update user data
-    setUserData();
-
     // Handle click helper for signin window
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -40,6 +35,24 @@ export function Login(props) {
       document.removeEventListener('click', handleClickOutside, true);
     };
   }, []);
+
+  const setUserData = useCallback(async () => {
+    if (isLoggedIn()) {
+      try {
+        const user = await readUser(getIdCookie());
+        setCurrentUser(user.username);
+      } catch (err) {
+        console.error(err.message);
+        setCurrentUser();
+        console.log('No userIdCookie info stored.');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Once on render, read cookies to update user data
+    setUserData();
+  }, [setUserData]);
 
   const handleSignIn = async (event) => {
     event.preventDefault();
@@ -67,21 +80,6 @@ export function Login(props) {
     setUsername('');
     setPassword('');
     setDialogIsOpen(false);
-  };
-
-  const setUserData = async () => {
-    props.setIsLoggedIn(isLoggedIn());
-    if (isLoggedIn()) {
-      //debugger;
-      try {
-        const user = await readUser(getIdCookie());
-        setCurrentUser(user.username);
-      } catch (err) {
-        console.error(err.message);
-        setCurrentUser();
-        console.log('No userIdCookie info stored.');
-      }
-    }
   };
 
   let signIn;

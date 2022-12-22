@@ -6,15 +6,16 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { Login } from './Login';
 
 export function Main() {
-  const [sort, setSort] = useState('default');
   const [rawArticles, setRawArticles] = useState();
-  const [site, setSite] = useState('google');
-  const [seSite, setSeSite] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [settings, setSettings] = useState({
+    sort: 'default',
+    site: 'google',
+    seSite: 'stackexchange',
+  });
 
   return (
     <>
-      <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Login />
       <div className="main">
         <Link to="/">
           <h1>Search Helper</h1>
@@ -23,28 +24,22 @@ export function Main() {
         <div className="search">
           <Search
             setRawArticles={setRawArticles}
-            sort={sort}
-            setSort={setSort}
-            site={site}
-            setSite={setSite}
-            seSite={seSite}
-            setSeSite={setSeSite}
+            settings={settings}
+            setSettings={setSettings}
           />
           <Routes>
             <Route
               path="/results"
               element={
                 <SortedResults
-                  rawArticles={rawArticles}
-                  sort={sort}
-                  site={site}
-                  isLoggedIn={isLoggedIn}
+                  propRawArticles={rawArticles}
+                  settings={settings}
                 />
               }
             />
             <Route
               path="/saved"
-              element={<SavedResults site={site} isLoggedIn={isLoggedIn} />}
+              element={<SavedResults settings={settings} />}
             />
           </Routes>
         </div>

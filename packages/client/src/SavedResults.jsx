@@ -7,13 +7,13 @@ import { addLink, readUser, remLink } from './modules/useEndpoints';
 import { getIdCookie, isLoggedIn } from './modules/cookieHandler';
 import { useEffect } from 'react';
 
-export function SavedResults(props) {
+export function SavedResults({ settings }) {
   const navigate = useNavigate();
   const [googleLinks, setGoogleLinks] = useState([]);
   const [seLinks, setSeLinks] = useState([]);
 
   const setStarredArrays = useCallback(async () => {
-    if (props.isLoggedIn) {
+    if (isLoggedIn()) {
       const user = await readUser(getIdCookie());
       setGoogleLinks(user.saved.google);
       setSeLinks(user.saved.se);
@@ -21,9 +21,10 @@ export function SavedResults(props) {
       setGoogleLinks([]);
       setSeLinks([]);
     }
-  }, [props.isLoggedIn]);
+  }, []);
 
   useEffect(() => {
+    // Once on render, set starred arrays if id cookies were saved
     setStarredArrays();
   }, [setStarredArrays]);
 
@@ -88,27 +89,36 @@ export function SavedResults(props) {
   };
 
   let savedList;
-  switch (props.site) {
+  switch (settings.site) {
     case 'google':
       savedList = googleLinks.map((item) => {
+        if (item.id === '-1') {
+          // Error id
+          return <li key={item.id}>{item.title}</li>;
+        }
         return (
           <li key={item.id}>
             <a href={item.link} target="_blank" rel="nooperner noreferrer">
               {item.title}
             </a>
-            {checkStarred(props.site, item.title, item.link)}
+            {checkStarred(settings.site, item.title, item.link)}
           </li>
         );
       });
       break;
     case 'se':
       savedList = seLinks.map((item) => {
+        console.log(item);
+        if (item.id === '-1') {
+          // Error id
+          return <li key={item.id}>{item.title}</li>;
+        }
         return (
           <li key={item.id}>
             <a href={item.link} target="_blank" rel="nooperner noreferrer">
               {item.title}
             </a>
-            {checkStarred(props.site, item.title, item.link)}
+            {checkStarred(settings.site, item.title, item.link)}
           </li>
         );
       });
