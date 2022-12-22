@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faUser, faX } from '@fortawesome/free-solid-svg-icons';
-import { getUser, readUser } from './modules/useEndpoints';
+import { deleteUser, getUser, readUser } from './modules/useEndpoints';
 
 export function Login(props) {
   const [username, setUsername] = useState('');
@@ -49,7 +49,7 @@ export function Login(props) {
       setWarning('');
       setUserData();
       handleClose();
-      alert('Successfully logged in!');
+      window.alert('Successfully logged in!');
     } catch (err) {
       console.error(err.message);
       setWarning(err.message);
@@ -60,7 +60,17 @@ export function Login(props) {
     removeIdCookie();
     setUserData();
     handleClose();
-    alert('Successfully logged out!');
+    window.alert('Successfully logged out!');
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      // Enter password to confirm?
+      deleteUser(getIdCookie());
+      removeIdCookie();
+      setUserData();
+      window.alert('Successfully deleted user');
+    }
   };
 
   const handleClose = () => {
@@ -115,6 +125,7 @@ export function Login(props) {
             </div>
           </div>
           <button onClick={handleSignOut}>Sign Out?</button>
+          <button onClick={handleDelete}>Delete Account</button>
         </div>
       );
     } else {

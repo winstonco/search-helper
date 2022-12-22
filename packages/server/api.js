@@ -3,6 +3,19 @@ import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 
 import { Link, User } from './models/index.js';
+/**
+ * @typedef {Object} User
+ * @property {string} username The username
+ * @property {string} password The encrypted password
+ * @property {mongoose.Types.ObjectId} _id The User's ObjectId
+ *
+ * @typedef {Object} Link
+ * @property {string} link The link url
+ * @property {mongoose.Types.ObjectId} user The ObjectId of the user
+ * @property {'google' | 'se'} source The source (google or se)
+ * @property {string} title The title of the link
+ * @property {mongoose.Types.ObjectId} _id The Link's ObjectId
+ */
 
 const saltRounds = 10;
 
@@ -112,8 +125,7 @@ router.post('/read', async (req, res) => {
 router.delete('/deleteUser', async (req, res) => {
   const { _id } = req.body;
   try {
-    await User.deleteOne({ _id }).exec();
-    res.json('Successfully deleted user');
+    res.json(await User.deleteOne({ _id }).exec());
   } catch (err) {
     console.error(err);
     res.status(400).json(err);
@@ -135,7 +147,7 @@ router.put('/addLink', async (req, res) => {
     const linkId = mongoose.Types.ObjectId();
     const newLink = await Link.create({
       _id: linkId,
-      user: _id,
+      user: mongoose.Types.ObjectId(_id),
       source: site,
       title,
       link,
@@ -160,7 +172,12 @@ router.put('/remLink', async (req, res) => {
   const { _id, site, title, link } = req.body;
   try {
     res.json(
-      await Link.deleteOne({ user: _id, source: site, title, link }).exec()
+      await Link.deleteOne({
+        user: mongoose.Types.ObjectId(_id),
+        source: site,
+        title,
+        link,
+      }).exec()
     );
   } catch (err) {
     console.error(err);
@@ -176,7 +193,6 @@ router.put('/remLink', async (req, res) => {
  * @param site The source (google or se)
  * @param title The title of the link
  * @param link The link url
- *
  * @returns true if the user has the link saved
  */
 router.post('/containsLink', async (req, res) => {
