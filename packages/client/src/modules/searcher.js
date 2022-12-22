@@ -101,11 +101,9 @@ export class Searcher {
         articles = [
           { title: (await res.json()).error_message, link: '', id: '-1' },
         ];
-        console.log(articles);
       }
     } catch (err) {
       articles = [{ title: err, link: '', id: '-1' }];
-      console.log(articles);
     } finally {
       console.log(articles);
       return articles;
