@@ -7,13 +7,13 @@ import { addLink, readUser, remLink } from './modules/useEndpoints';
 import { getIdCookie, isLoggedIn } from './modules/cookieHandler';
 import { useEffect } from 'react';
 
-export function SortedResults(props) {
+export function SortedResults({ propRawArticles, settings }) {
   const navigate = useNavigate();
   const [googleLinks, setGoogleLinks] = useState([]);
   const [seLinks, setSeLinks] = useState([]);
 
   const setStarredArrays = useCallback(async () => {
-    if (props.isLoggedIn) {
+    if (isLoggedIn()) {
       const user = await readUser(getIdCookie());
       setGoogleLinks(user.saved.google);
       setSeLinks(user.saved.se);
@@ -21,26 +21,26 @@ export function SortedResults(props) {
       setGoogleLinks([]);
       setSeLinks([]);
     }
-  }, [props.isLoggedIn]);
+  }, []);
 
   useEffect(() => {
+    // Once on render, set starred arrays if id cookies were saved
     setStarredArrays();
   }, [setStarredArrays]);
 
   // Sort
-  const results = props.rawArticles || [];
+  const results = propRawArticles || [];
   if (results && results.length > 0) {
-    switch (props.sort) {
+    switch (settings.sort) {
       case 'date':
-        // sort raw by date, mutating raw
-        //raw.forEach();
+        // sorting by date done by google/se API
         break;
       case 'relevancy':
         console.log('relevancy');
         break;
       case 'starred':
         // When sorting by starred, check in the right list
-        switch (props.site) {
+        switch (settings.site) {
           case 'google':
             results.sort((a, b) => {
               if (googleLinks.some((item) => item.link === a.link)) {
@@ -133,16 +133,20 @@ export function SortedResults(props) {
     }
   };
 
+  // debugger;
   let resultsList;
   resultsList = results.map((item) => {
-    // using default props.sort
-    // sort articles and set resultsList
+    if (item.id === '-1') {
+      // Error id
+      return <li key={item.id}>{item.title}</li>;
+    }
+    // @todo sorting here?
     return (
       <li key={item.id}>
         <a href={item.link} target="_blank" rel="nooperner noreferrer">
           {item.title}
         </a>
-        {checkStarred(props.site, item.title, item.link)}
+        {checkStarred(settings.site, item.title, item.link)}
       </li>
     );
   });

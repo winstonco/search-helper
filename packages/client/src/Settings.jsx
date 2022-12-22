@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear } from '@fortawesome/free-solid-svg-icons';
 
-export function Settings(props) {
+export function Settings({ setSite, setSort }) {
   // Website picker
   // Sort options
   const [isOpen, setIsOpen] = useState(false);
@@ -11,12 +11,12 @@ export function Settings(props) {
 
   const changeSite = (event) => {
     console.log('site: ' + event.target.value);
-    props.setSite(event.target.value);
+    setSite(event.target.value);
   };
 
   const changeSort = (event) => {
     console.log('sort: ' + event.target.value);
-    props.setSort(event.target.value);
+    setSort(event.target.value);
   };
 
   const handleClick = () => {

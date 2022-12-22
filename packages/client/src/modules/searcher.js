@@ -85,26 +85,29 @@ export class Searcher {
     console.log('Request: ' + reqURL);
     let articles;
     try {
-      const response = await fetch(reqURL);
-      const body = await response.json();
-      let items = body.items;
-      articles = [];
-      items.forEach((item) => {
-        articles.push({
-          title: item.title,
-          link: item.link,
-          id: item.question_id,
+      const res = await fetch(reqURL);
+      if (res.ok) {
+        const body = await res.json();
+        let items = body.items;
+        articles = [];
+        items.forEach((item) => {
+          articles.push({
+            title: item.title,
+            link: item.link,
+            id: item.question_id,
+          });
         });
-      });
-    } catch (Error) {
-      articles = [
-        {
-          title: 'StackExchange search count limit reached',
-          link: '',
-          id: '-1',
-        },
-      ];
+      } else {
+        articles = [
+          { title: (await res.json()).error_message, link: '', id: '-1' },
+        ];
+        console.log(articles);
+      }
+    } catch (err) {
+      articles = [{ title: err, link: '', id: '-1' }];
+      console.log(articles);
     } finally {
+      console.log(articles);
       return articles;
     }
   }
@@ -140,17 +143,25 @@ export class Searcher {
     console.log('Request: ' + reqURL);
     let articles;
     try {
-      const response = await fetch(reqURL);
-      const body = await response.json();
-      let items = body.items;
-      articles = [];
-      items.forEach((item) => {
-        articles.push({ title: item.title, link: item.link, id: item.cacheId });
-      });
-    } catch (Error) {
-      articles = [
-        { title: 'Google search count limit reached', link: '', id: '-1' },
-      ];
+      const res = await fetch(reqURL);
+      if (res.ok) {
+        const body = await res.json();
+        let items = body.items;
+        articles = [];
+        items.forEach((item) => {
+          articles.push({
+            title: item.title,
+            link: item.link,
+            id: item.cacheId,
+          });
+        });
+      } else {
+        articles = [
+          { title: (await res.json()).error_message, link: '', id: '-1' },
+        ];
+      }
+    } catch (err) {
+      articles = [{ title: err, link: '', id: '-1' }];
     } finally {
       return articles;
     }
